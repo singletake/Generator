@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - Shape Generator 1.3.3</title>
+  
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #ffffff;
+      font-family: Helvetica, Arial, sans-serif;
+    }
+
+    .container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .shape {
+      width: 200px;
+      height: 200px;
+      background-color: #000000;
+    }
+
+    .controls {
+      position: fixed;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      z-index: 1;
+      gap: 2px;
+    }
+
+    .slider {
+      width: 200px;
+      margin: 0 10px;
+    }
+
+    .button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #ffffff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .color-bar {
+      width: 200px;
+      height: 20px;
+      margin: 0 10px;
+    }
+
+    .color-option {
+      margin-left: 10px;
+    }
+
+    .credit {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      font-size: 12px;
+      color: #808080;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="shape"></div>
+  </div>
+
+  <div class="controls">
+    <label for="numPoints">Points:</label>
+    <input type="range" id="numPoints" class="slider" min="3" max="100" value="1">
+    <span id="pointsValue">3</span>
+    <label for="size">Size:</label>
+    <input type="range" id="size" class="slider" min="10" max="100" value="50">
+    <label for="roundness">Roundness:</label>
+    <input type="range" id="roundness" class="slider" min="0" max="100" value="40">
+    <span id="roundnessValue">40</span>
+    <div class="color-controls">
+      <label for="colorOption">Color Option:</label>
+      <select id="colorOption" class="color-option">
+        <option value="solid">Solid</option>
+        <option value="gradient">Gradient</option>
+      </select>
+      <label for="solidColor">Solid Colour:</label>
+      <input type="color" id="solidColor" class="color-bar" value="#000000">
+      <label for="gradientColor1">Gradient Colour 1:</label>
+      <input type="color" id="gradientColor1" class="color-bar" value="#000000">
+      <label for="gradientColor2">Gradient Colour 2:</label>
+      <input type="color" id="gradientColor2" class="color-bar" value="#ffffff">
+      <label for="bgColor">Background Colour:</label>
+      <input type="color" id="bgColor" class="color-bar" value="#ffffff">
+    </div>
+    <button class="button" id="generateButton">Generate</button>
+    <button class="button" id="startContinuousButton">Start Continuous</button>
+    <button class="button" id="stopContinuousButton">Stop Continuous</button>
+    <button class="button" id="changeBgColorButton">Change Background</button>
+    <button class="button" id="randomBgColorButton">Random Background</button>
+  </div>
+
+  <div class="credit"><b>Shape Generator</b> / v.1.3.3 / Last Update 23.07.2023 / &copy; Yongho Moon 2023</div>
+
+  <script>
+    function generateRandomShape(numPoints, size, roundness, colorOption, solidColor, gradientColor1, gradientColor2) {
+      const shape = document.querySelector('.shape');
+      const rotation = `rotate(${getRandomNumber(0, 360)}deg)`;
+      const clipPath = `polygon(${generateRandomPoints(numPoints, roundness).join(', ')})`;
+
+      shape.style.transform = rotation;
+      shape.style.clipPath = clipPath;
+      shape.style.width = `${size}%`;
+      shape.style.height = `${size}%`;
+
+      if (colorOption === 'solid') {
+        shape.style.background = solidColor;
+      } else {
+        shape.style.background = `linear-gradient(to right, ${gradientColor1}, ${gradientColor2})`;
+      }
+    }
+
+    function generateRandomPoints(numPoints, roundness) {
+      const points = [];
+      const angleIncrement = 360 / numPoints;
+      const roundnessFactor = roundness / 100; // Convert roundness to a factor between 0 and 1
+
+      for (let i = 0; i < numPoints; i++) {
+        const angle = angleIncrement * i;
+        const length = Math.random() * (70 - roundnessFactor * 70) + roundnessFactor * 30; // Random length between 30 and 100 (with consideration for roundness)
+        const x = Math.cos((angle * Math.PI) / 180) * length * 0.005 + 0.5;
+        const y = Math.sin((angle * Math.PI) / 180) * length * 0.005 + 0.5;
+        points.push(`${x * 100}% ${y * 100}%`);
+      }
+
+      return points;
+    }
+
+    function handleGenerate() {
+      const numPoints = parseInt(document.getElementById('numPoints').value);
+      const size = parseInt(document.getElementById('size').value);
+      const roundness = parseInt(document.getElementById('roundness').value);
+      const colorOption = document.getElementById('colorOption').value;
+      const solidColor = document.getElementById('solidColor').value;
+      const gradientColor1 = document.getElementById('gradientColor1').value;
+      const gradientColor2 = document.getElementById('gradientColor2').value;
+
+      generateRandomShape(numPoints, size, roundness, colorOption, solidColor, gradientColor1, gradientColor2);
+    }
+
+    function handleNumPointsChange() {
+      const numPoints = parseInt(document.getElementById('numPoints').value);
+      document.getElementById('pointsValue').textContent = numPoints;
+    }
+
+    function handleRoundnessChange() {
+      const roundnessSlider = document.getElementById('roundness');
+      const roundnessValue = document.getElementById('roundnessValue');
+
+      // Get the current roundness value from the slider
+      const roundness = parseInt(roundnessSlider.value);
+
+      // Display the roundness value beside the slider
+      roundnessValue.textContent = roundness;
+    }
+
+    // Variables to store the interval ID and continuous generation state
+    let intervalId;
+    let continuousGeneration = false;
+
+    // Function to generate random shapes (used for manual and continuous generation)
+    function generateShape() {
+      const numPoints = parseInt(document.getElementById('numPoints').value);
+      const size = parseInt(document.getElementById('size').value);
+      const roundness = parseInt(document.getElementById('roundness').value);
+      const colorOption = document.getElementById('colorOption').value;
+      const solidColor = document.getElementById('solidColor').value;
+      const gradientColor1 = document.getElementById('gradientColor1').value;
+      const gradientColor2 = document.getElementById('gradientColor2').value;
+
+      generateRandomShape(numPoints, size, roundness, colorOption, solidColor, gradientColor1, gradientColor2);
+    }
+
+    // Function to start continuous generation
+    function startContinuousGeneration() {
+      if (!continuousGeneration) {
+        continuousGeneration = true;
+        intervalId = setInterval(generateShape, 40); // Generate a new shape approximately every 40ms (25 shapes per second)
+      }
+    }
+
+    // Function to stop continuous generation
+    function stopContinuousGeneration() {
+      continuousGeneration = false;
+      clearInterval(intervalId);
+    }
+
+    // Function to change background color
+    function changeBackgroundColor(color) {
+      document.body.style.backgroundColor = color;
+    }
+
+    // Function to generate random background color
+    function generateRandomBgColor() {
+      const randomColor = getRandomColor();
+      changeBackgroundColor(randomColor);
+    }
+
+    // Event listeners
+    const generateButton = document.getElementById('generateButton');
+    const numPointsSlider = document.getElementById('numPoints');
+    const roundnessSlider = document.getElementById('roundness');
+    const startContinuousButton = document.getElementById('startContinuousButton');
+    const stopContinuousButton = document.getElementById('stopContinuousButton');
+    const changeBgColorButton = document.getElementById('changeBgColorButton');
+    const randomBgColorButton = document.getElementById('randomBgColorButton');
+    const bgColorSelector = document.getElementById('bgColor');
+
+    numPointsSlider.addEventListener('input', handleNumPointsChange);
+    roundnessSlider.addEventListener('input', handleRoundnessChange);
+    generateButton.addEventListener('click', generateShape);
+    startContinuousButton.addEventListener('click', startContinuousGeneration);
+    stopContinuousButton.addEventListener('click', stopContinuousGeneration);
+    changeBgColorButton.addEventListener('click', () => changeBackgroundColor(bgColorSelector.value));
+    randomBgColorButton.addEventListener('click', generateRandomBgColor);
+
+    handleNumPointsChange(); // Set initial value
+    handleRoundnessChange(); // Set initial value
+
+    // Utility function to generate a random number between min and max (inclusive)
+    function getRandomNumber(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // Utility function to generate a random color
+    function getRandomColor() {
+      const letters = '0123456789ABCDEF';
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+  </script>
+</body>
+</html>
+<!-- partial -->
+  
+</body>
+</html>
