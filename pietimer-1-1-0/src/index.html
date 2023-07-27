@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PieTimer</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="wrapper">
+    <div class="container">
+      <canvas id="pieChartCanvas" width="350" height="350"></canvas>
+      <div class="controls">
+        <input type="number" id="minutesInput" min="1" max="60" step="1">
+        <span>Minutes</span>
+        <span class="spacer"></span>
+        <span>Colour</span>
+        <input type="color" id="progressColor" value="#4CAF50">
+        <span class="spacer"></span>
+        <button id="startStopButton">Start</button>
+        <button id="resetButton">Reset</button>
+      </div>
+    </div>
+    <p class="credits">PieTimer / V 1.1.0 / Last Update 10.07.2023 / © Yongho Moon</p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
