@@ -1,0 +1,90 @@
+body {
+    font-family: "Helvetica", sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+
+.outer-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column; /* Align the elements in a column */
+    min-height: 100vh;
+}
+
+.container {
+    background-color: #f1f1f1;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 400px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 20px; /* Add margin at the bottom of the container */
+}
+
+.progress-bar-container {
+    background-color: #f1f1f1;
+    border: 1px solid #ccc;
+    height: 30px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: #4CAF50;
+    width: 0%;
+    border-radius: 5px;
+}
+
+.input-container {
+    margin-top: 10px;
+}
+
+.input-container input {
+    width: 50px;
+    margin-right: 5px;
+    border: 1px solid #ccc;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.input-container span {
+    margin-right: 10px;
+}
+
+.input-container button {
+    margin-left: 10px;
+    margin-bottom: 5px;
+    margin-top: 5px; /* Add margin at the top of the buttons */
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.credits {
+    font-size: 12px;
+}
+
+.blinking {
+    animation: blinkAnimation 0.5s infinite;
+}
+
+@keyframes blinkAnimation {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+}
